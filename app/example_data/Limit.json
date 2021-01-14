@@ -1,0 +1,23 @@
+[{
+  "_id":1,
+  "Equipment":[3,4],
+  "Property":"Counts",
+  "Admin":true,
+  "LimitLevel":[
+    {
+      "_id":1,
+      "Limit":1,
+      "Lower":null,
+      "Upper":50,
+      "Urgency":"Low Warning"
+    },
+    {
+      "_id":2,
+      "Limit":1,
+      "Lower":null,
+      "Upper":100,
+      "Urgency":"Low Alarm"
+    }
+  ]
+  }
+]

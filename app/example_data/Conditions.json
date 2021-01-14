@@ -1,0 +1,1 @@
+[{"Sample": 1, "Condition": "Healthy", "Timestamp": 1602374400.0, "Version": 2.0, "Extra": {"run": true, "id": 54321}}, {"Sample": 1, "Condition": "Low Warning", "Timestamp": 1602460800.0, "Version": 2.0, "Extra": {"run": true, "id": 54321}}, {"Sample": 1, "Condition": "Low Alarm", "Timestamp": 1602806400.0, "Version": 2.0, "Extra": {"run": true, "id": 54321}}]
