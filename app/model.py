@@ -40,7 +40,7 @@ def get_urgency_priorities(limits):
         if level_key is not None:
             limit_levels=limit[level_key]
             for x in limit_levels:
-                x['upperlower']=x.get('Upper') or x.get('upper') or -x.get('Lower') or -x.get('lower')
+                x['upperlower']=np.nanmax([x.get('Upper',np.nan), x.get('upper',np.nan), -x.get('Lower',np.nan), -x.get('lower',np.nan)])
             limit_levels=sorted([x for x in limit_levels if x['upperlower'] is not None],key=lambda x: x['upperlower'])
 
             for limitlevel in limit_levels:
@@ -60,8 +60,8 @@ def get_equipment_limits(equipment_id,limits,property_name):
             level_key=([key for key in limit.keys() if 'level' in key.lower()]+[None])[0]
             if prop is not None and level_key is not None and prop.lower()==property_name.lower():
                 for limitlevel in limit[level_key]:
-                    levels['upper'].append(limitlevel.get('Upper') or limitlevel.get('upper') or np.inf)
-                    levels['lower'].append(limitlevel.get('Lower') or limitlevel.get('lower') or -np.inf)
+                    levels['upper'].append(limitlevel['Upper'] if 'Upper' in limitlevel else (limitlevel['upper'] if 'upper' in limitlevel else np.inf))
+                    levels['lower'].append(limitlevel['Lower'] if 'Lower' in limitlevel else (limitlevel['lower'] if 'lower' in limitlevel else -np.inf))
                     levels['urgency'].append(limitlevel.get('Urgency') or limitlevel.get('urgency'))
     return {key:np.array(vals) for key,vals in levels.items()}
 
