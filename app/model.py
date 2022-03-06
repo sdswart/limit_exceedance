@@ -85,28 +85,29 @@ def predict(config,samples,limits):
 
                 for equipment_id in sample_equipment:
                     equipment_limits = get_equipment_limits(equipment_id,limits,property_name)
-                    y_upper=y-equipment_limits['upper'].reshape((-1,1))
-                    y_lower=equipment_limits['lower'].reshape((-1,1))-y
-                    y_all=np.vstack([y_upper,y_lower])
-                    y_all=np.where(np.logical_or(np.isnan(y_all),y_all<0),np.inf,y_all)
-                    pos=~np.all(np.isinf(y_all),axis=0)
-                    ind=np.argmin(y_all,axis=0)
-                    urgency=np.tile(equipment_limits['urgency'],2)
-                    cur_conditions=np.where(pos,urgency[ind],None)
+                    if len(equipment_limits['urgency'])>0: #limit for property exists
+                        y_upper=y-equipment_limits['upper'].reshape((-1,1))
+                        y_lower=equipment_limits['lower'].reshape((-1,1))-y
+                        y_all=np.vstack([y_upper,y_lower])
+                        y_all=np.where(np.logical_or(np.isnan(y_all),y_all<0),np.inf,y_all)
+                        pos=~np.all(np.isinf(y_all),axis=0)
+                        ind=np.argmin(y_all,axis=0)
+                        urgency=np.tile(equipment_limits['urgency'],2)
+                        cur_conditions=np.where(pos,urgency[ind],None)
 
-                    prev_cond=None
-                    for t,condition in zip(t[pos],urgency[ind][pos]):
-                        if prev_cond is None or condition!=prev_cond:
-                            conditions.append({
-                                'Equipment_id':equipment_id,
-                                'Property':property_name,
-                                'Sample':sample['_id'],
-                                'Condition':condition,
-                                'Timestamp':t,
-                                'Version':config.VERSION,
-                                'Extra':(config.EXTRA_RETURN_ARGS if config.EXTRA_RETURN_ARGS else {}),
-                            })
-                            prev_cond=condition
+                        prev_cond=None
+                        for t,condition in zip(t[pos],urgency[ind][pos]):
+                            if prev_cond is None or condition!=prev_cond:
+                                conditions.append({
+                                    'Equipment_id':equipment_id,
+                                    'Property':property_name,
+                                    'Sample':sample['_id'],
+                                    'Condition':condition,
+                                    'Timestamp':t,
+                                    'Version':config.VERSION,
+                                    'Extra':(config.EXTRA_RETURN_ARGS if config.EXTRA_RETURN_ARGS else {}),
+                                })
+                                prev_cond=condition
     #Clean up
     conditions=sorted(conditions,key=lambda x: x['Timestamp'])
     res=[]
